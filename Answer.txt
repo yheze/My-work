@@ -1,0 +1,51 @@
+class TreeNode {
+    int val;
+    TreeNode left;
+    TreeNode right;
+    TreeNode(int val) { this.val = val; }
+}
+
+public class Solution {
+    private int maxSum;
+
+    public int maxPathSum(TreeNode root) {
+        maxSum = Integer.MIN_VALUE;
+        calculateGain(root);
+        return maxSum;
+    }
+
+    private int calculateGain(TreeNode node) {
+        if (node == null) return 0;
+
+        // Ignore negative paths by taking max with 0
+        int leftGain = Math.max(calculateGain(node.left), 0);
+        int rightGain = Math.max(calculateGain(node.right), 0);
+
+        // Update the global maximum if path through current node is larger
+        maxSum = Math.max(maxSum, node.val + leftGain + rightGain);
+
+        // Return max contribution this node can make to its parent
+        return node.val + Math.max(leftGain, rightGain);
+    }
+
+    // Main method to test with our example input: [-10, 9, 20, null, null, 15, 7]
+    public static void main(String[] args) {
+        /*
+             -10
+            /   \
+           9     20
+                /  \
+               15   7
+        */
+        TreeNode root = new TreeNode(-10);
+        root.left = new TreeNode(9);
+        root.right = new TreeNode(20);
+        root.right.left = new TreeNode(15);
+        root.right.right = new TreeNode(7);
+
+        Solution solution = new Solution();
+        int result = solution.maxPathSum(root);
+
+        System.out.println("Maximum Path Sum: " + result); // Output should be 42
+    }
+}
